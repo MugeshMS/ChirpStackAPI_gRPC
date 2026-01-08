@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Gateway</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 400px;
+            margin: 80px auto;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+        }
+        button {
+            margin-top: 16px;
+            padding: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Create Gateway</h2>
+
+    <form th:action="@{/ui/create}" method="post">
+
+        <label>Gateway ID</label>
+        <input type="text" name="gatewayId" required />
+
+        <label>Name</label>
+        <input type="text" name="name" required />
+
+        <label>Description</label>
+        <input type="text" name="description" />
+
+        <button type="submit">Create Gateway</button>
+    </form>
+
+    <br/>
+    <a th:href="@{/ui/gateways/list}">
+        <button>Back</button>
+    </a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gateway List</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .actions button {
+            margin-right: 6px;
+        }
+        .top-bar {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Gateway List</h2>
+
+<div class="top-bar">
+    <!-- Add Gateway -->
+    <a th:href="@{/ui/create}">
+        <button>Add Gateway</button>
+    </a>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Gateway ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="gw : ${gateways}">
+            <!-- Clickable Gateway ID -->
+            <td>
+                <a th:href="@{/ui/gateways/{id}(id=${gw.gatewayId})}"
+                   th:text="${gw.gatewayId}">
+                </a>
+            </td>
+
+            <td th:text="${gw.name}"></td>
+            <td th:text="${gw.description}"></td>
+
+            <!-- Actions -->
+            <td class="actions">
+                <!-- Delete -->
+                <form th:action="@{/ui/gateways/{id}/delete(id=${gw.gatewayId})}"
+                      method="post"
+                      style="display:inline;">
+                    <button type="submit"
+                            onclick="return confirm('Delete this gateway?')">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

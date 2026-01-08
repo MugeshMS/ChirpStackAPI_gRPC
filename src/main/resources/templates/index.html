@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ChirpStack Gateway UI</title>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            width: 420px;
+            margin: 120px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+        }
+
+        button {
+            margin-top: 16px;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>ChirpStack Gateway Management</h2>
+
+    <form th:action="@{/ui/gateways}" method="post">
+
+        <label for="tenantId">Tenant ID</label>
+        <input type="text"
+               id="tenantId"
+               name="tenantId"
+               placeholder="Enter Tenant ID"
+               required />
+
+        <label for="apiKey">API Key</label>
+        <input type="password"
+               id="apiKey"
+               name="apiKey"
+               placeholder="Enter API Key"
+               required />
+
+        <button type="submit">Load Gateways</button>
+    </form>
+
+    <!-- Error message (optional) -->
+    <div class="error" th:if="${error}" th:text="${error}"></div>
+</div>
+
+</body>
+</html>

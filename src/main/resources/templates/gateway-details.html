@@ -1,0 +1,292 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <title>Gateway Details</title>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            background: #f4f6f8;-->
+<!--            margin: 0;-->
+<!--            padding: 20px;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            max-width: 1200px;-->
+<!--            margin: auto;-->
+<!--            background: white;-->
+<!--            padding: 20px;-->
+<!--            border-radius: 6px;-->
+<!--        }-->
+
+<!--        .chart-box {-->
+<!--            margin-top: 25px;-->
+<!--            padding: 15px;-->
+<!--            border: 1px solid #ddd;-->
+<!--            border-radius: 6px;-->
+<!--        }-->
+
+<!--        .chart-title {-->
+<!--            font-weight: bold;-->
+<!--            margin-bottom: 10px;-->
+<!--        }-->
+
+<!--        canvas {-->
+<!--            max-height: 280px !important;-->
+<!--        }-->
+
+<!--        .back-btn {-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+
+<!--<body>-->
+
+<!--<div class="container">-->
+
+<!--    <h2>Gateway Details</h2>-->
+
+<!--    <p><b>Gateway ID:</b> <span th:text="${gateway.gatewayId}"></span></p>-->
+<!--    <p><b>Name:</b> <span th:text="${gateway.name}"></span></p>-->
+<!--    <p><b>Description:</b> <span th:text="${gateway.description}"></span></p>-->
+<!--    <p><b>Stats Interval:</b> <span th:text="${gateway.statsInterval}"></span></p>-->
+<!--    <p><b>Last Seen:</b> <span th:text="${lastSeenAt}"></span></p>-->
+
+<!--    &lt;!&ndash; RX Graph &ndash;&gt;-->
+<!--    <div class="chart-box">-->
+<!--        <div class="chart-title">Received Packets</div>-->
+<!--        <canvas id="rxChart"></canvas>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; TX Graph &ndash;&gt;-->
+<!--    <div class="chart-box">-->
+<!--        <div class="chart-title">Transmitted Packets</div>-->
+<!--        <canvas id="txChart"></canvas>-->
+<!--    </div>-->
+
+<!--    <a th:href="@{/ui/gateways/list}" class="back-btn">-->
+<!--        <button>Back</button>-->
+<!--    </a>-->
+
+<!--</div>-->
+
+<!--<script th:inline="javascript">-->
+<!--    const labels = [[${labels}]];-->
+<!--    const rxValues = [[${rxValues}]];-->
+<!--    const txValues = [[${txValues}]];-->
+
+<!--    new Chart(document.getElementById('rxChart'), {-->
+<!--        type: 'line',-->
+<!--        data: {-->
+<!--            labels: labels,-->
+<!--            datasets: [{-->
+<!--                label: 'RX Packets',-->
+<!--                data: rxValues,-->
+<!--                borderColor: 'green',-->
+<!--                tension: 0.3-->
+<!--            }]-->
+<!--        },-->
+<!--        options: {-->
+<!--            responsive: true,-->
+<!--            maintainAspectRatio: false-->
+<!--        }-->
+<!--    });-->
+
+<!--    new Chart(document.getElementById('txChart'), {-->
+<!--        type: 'line',-->
+<!--        data: {-->
+<!--            labels: labels,-->
+<!--            datasets: [{-->
+<!--                label: 'TX Packets',-->
+<!--                data: txValues,-->
+<!--                borderColor: 'blue',-->
+<!--                tension: 0.3-->
+<!--            }]-->
+<!--        },-->
+<!--        options: {-->
+<!--            responsive: true,-->
+<!--            maintainAspectRatio: false-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gateway Details</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .chart-box {
+            margin-top: 25px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .chart-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        canvas {
+            max-height: 280px !important;
+        }
+
+        .back-btn {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Gateway Details</h2>
+
+    <p><b>Gateway ID:</b> <span th:text="${gateway.gatewayId}"></span></p>
+    <p><b>Name:</b> <span th:text="${gateway.name}"></span></p>
+    <p><b>Description:</b> <span th:text="${gateway.description}"></span></p>
+    <p><b>Stats Interval:</b> <span th:text="${gateway.statsInterval}"></span></p>
+    <p><b>Last Seen:</b> <span th:text="${lastSeenAt}"></span></p>
+
+    <!-- RX / TX over time -->
+    <div class="chart-box">
+        <div class="chart-title">Received / Transmitted (Time)</div>
+        <canvas id="rxTxChart"></canvas>
+    </div>
+
+    <!-- RX / TX per Frequency -->
+    <div class="chart-box">
+        <div class="chart-title">Received / Transmitted per Frequency</div>
+        <canvas id="freqChart"></canvas>
+    </div>
+
+    <!-- RX / TX per Data Rate -->
+    <div class="chart-box">
+        <div class="chart-title">Received / Transmitted per Data Rate</div>
+        <canvas id="drChart"></canvas>
+    </div>
+
+    <a th:href="@{/ui/gateways/list}" class="back-btn">
+        <button>Back</button>
+    </a>
+
+</div>
+
+<script th:inline="javascript">
+    /* -----------------------------
+       RX / TX over time
+    ----------------------------- */
+    const labels = [[${labels}]];
+    const rxValues = [[${rxValues}]];
+    const txValues = [[${txValues}]];
+
+    new Chart(document.getElementById('rxTxChart'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'RX Packets',
+                    data: rxValues,
+                    borderColor: 'green',
+                    tension: 0.3
+                },
+                {
+                    label: 'TX Packets',
+                    data: txValues,
+                    borderColor: 'blue',
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    /* -----------------------------
+       RX / TX per Frequency
+    ----------------------------- */
+    const rxFreqLabels = [[${rxFreqLabels}]];
+    const rxFreqValues = [[${rxFreqValues}]];
+    const txFreqValues = [[${txFreqValues}]];
+
+    new Chart(document.getElementById('freqChart'), {
+        type: 'bar',
+        data: {
+            labels: rxFreqLabels,
+            datasets: [
+                {
+                    label: 'RX Packets',
+                    data: rxFreqValues,
+                    backgroundColor: 'rgba(0, 200, 83, 0.6)'
+                },
+                {
+                    label: 'TX Packets',
+                    data: txFreqValues,
+                    backgroundColor: 'rgba(33, 150, 243, 0.6)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    /* -----------------------------
+       RX / TX per Data Rate
+    ----------------------------- */
+    const rxDrLabels = [[${rxDrLabels}]];
+    const rxDrValues = [[${rxDrValues}]];
+    const txDrValues = [[${txDrValues}]];
+
+    new Chart(document.getElementById('drChart'), {
+        type: 'bar',
+        data: {
+            labels: rxDrLabels,
+            datasets: [
+                {
+                    label: 'RX Packets',
+                    data: rxDrValues,
+                    backgroundColor: 'rgba(255, 152, 0, 0.6)'
+                },
+                {
+                    label: 'TX Packets',
+                    data: txDrValues,
+                    backgroundColor: 'rgba(156, 39, 176, 0.6)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+
+</body>
+</html>
