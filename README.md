@@ -23,3 +23,13 @@ This project implements a Gateway Management Dashboard using ChirpStack gRPC API
 
 ## Note
 API keys and tenant IDs are managed securely and not committed to the repository.
+---
+
+## Configuration
+
+Update `application.properties`:
+
+```properties
+server.port=9999
+chirpstack.port=<Port>
+chirpstack.IP=<IP>
